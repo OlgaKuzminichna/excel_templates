@@ -58,12 +58,77 @@ And this is the form that opens after clicking the 'New Entry' button:
   - **Date picker** → Date  
   - **Number input** → Duration  
   - **Dropdown lists** → Category, Organisation  
-  - **Multi-selection list** → Project Lead (supports adding new entries)  
+  - **Multi-selection list** → Project Lead (supports adding new entries)
+  - You can create **dependent dropdowns**, where the second dropdown’s options depend on the first dropdown’s selection.  
+      Example: If **Category** = `"IT & Software"`, then the **Subcategory** dropdown should only show:  
+         - `"Software Development"`  
+         - `"Cybersecurity"`  
+         - `"IT Support"`  
+         
+         ```vba
+         Private Sub Category_Change()
+             Dim selectedCategory As String
+             selectedCategory = Me.Category.Value
+         
+             ' Clear Subcategory dropdown
+             Me.Subcategory.Clear
+         
+             ' Populate Subcategory based on Category selection
+             Select Case selectedCategory
+                 Case "IT & Software"
+                     Me.Subcategory.AddItem "Software Development"
+                     Me.Subcategory.AddItem "Cybersecurity"
+                     Me.Subcategory.AddItem "IT Support"
+                 Case "Marketing"
+                     Me.Subcategory.AddItem "SEO"
+                     Me.Subcategory.AddItem "Content Strategy"
+                     Me.Subcategory.AddItem "Branding"
+                 Case "Finance"
+                     Me.Subcategory.AddItem "Accounting"
+                     Me.Subcategory.AddItem "Investments"
+                     Me.Subcategory.AddItem "Budgeting"
+             End Select
+         End Sub
+         ```
 - **Sheet Protection** →  
   - To **prevent accidental edits**, consider **protecting the sheet** while allowing VBA modifications.  
   - **Important:** If the sheet is protected, don’t forget to **add a password in the VBA code** for unlocking before data entry.  
+-  **Send an email notification when a new entry is saved**
 
----
+#### **VBA Code to Send Email via Outlook**  
+```vba
+Sub SendEmailNotification()
+    Dim OutlookApp As Object
+    Dim MailItem As Object
+    Dim recipient As String
+    Dim subject As String
+    Dim body As String
+
+    ' Set email details
+    recipient = "recipient@example.com" ' Change to desired recipient
+    subject = "New Entry Created in Excel Form"
+    body = "A new entry has been added to the Excel database." & vbNewLine & _
+           "Title: " & Range("A2").Value & vbNewLine & _
+           "Category: " & Range("B2").Value & vbNewLine & _
+           "Check the document at: " & Range("C2").Hyperlinks(1).Address
+
+    ' Create Outlook application and send email
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Set MailItem = OutlookApp.CreateItem(0)
+    
+    With MailItem
+        .To = recipient
+        .Subject = subject
+        .Body = body
+        .Send
+    End With
+    
+    ' Cleanup
+    Set MailItem = Nothing
+    Set OutlookApp = Nothing
+End Sub
+```
+
 
 ## 📁 How to Save Files in SharePoint Instead of Local Folder  
 

@@ -98,6 +98,3 @@ sharepointFolder = "https://yourcompany.sharepoint.com/sites/YourSite/Shared Doc
 
 'Modul2:
 x = Shell("C:\Windows\Explorer.exe /n,/e,""A:/YourSite/Shared Documents/YourFolder/""", vbNormalFocus)
-Dim destinationPath As String
-destinationPath = "https://yourcompany.sharepoint.com/sites/YourSite/Shared Documents/YourFolder/" & FileName
-FileSystemObject.MoveFile SourcePath, destinationPath
